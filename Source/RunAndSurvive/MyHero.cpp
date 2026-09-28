@@ -30,6 +30,14 @@ void AMyHero::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 	PlayerInputComponent->BindAxis("MoveRight", this, &AMyHero::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &AMyHero::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &AMyHero::AddControllerPitchInput);
+
+	// Для прыжка
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AMyHero::Jump);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AMyHero::StopJumping);
+
+	// Приседание
+	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMyHero::StartCrouch);
+	PlayerInputComponent->BindAction("UnCrouch", IE_Released, this, &AMyHero::StopCrouch);
 }
 
 void AMyHero::MoveForward(float Value)
@@ -50,4 +58,14 @@ void AMyHero::MoveRight(float Value)
 		FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, Value);
 	}
+}
+
+void AMyHero::StartCrouch()
+{
+	Crouch();
+}
+
+void AMyHero::StopCrouch()
+{
+	UnCrouch();
 }
