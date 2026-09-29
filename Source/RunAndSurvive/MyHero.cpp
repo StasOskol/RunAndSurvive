@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MyHero.h"
+#include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AMyHero::AMyHero()
@@ -13,12 +15,31 @@ AMyHero::AMyHero()
 void AMyHero::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Запоминаем стандартную высоту капсулы (стоя)
+	StandingCapsuleHalfHeight = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+
+	// Высота в приседе — половина от высоты стоя
+	CrouchingCapsuleHalfHeight = StandingCapsuleHalfHeight * 0.5f;
+
+	// Изначально мы стоим
+	TargetCapsuleHalfHeight = StandingCapsuleHalfHeight;
 }
 
 // Called every frame
 void AMyHero::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	// Текущая высота капсулы
+	float CurrentHalfHeight = GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight();
+
+	// Плавно интерполируем к целевой высоте
+	// Последний параметр — скорость приседания (чем больше, тем быстрее)
+	float NewHalfHeight = FMath::FInterpTo(CurrentHalfHeight, TargetCapsuleHalfHeight, DeltaTime, 8.0f);
+
+	// Применяем новую высоту
+	GetCapsuleComponent()->SetCapsuleHalfHeight(NewHalfHeight);
 }
 
 // Called to bind functionality to input
@@ -40,6 +61,7 @@ void AMyHero::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 	PlayerInputComponent->BindAction("UnCrouch", IE_Released, this, &AMyHero::StopCrouch);
 }
 
+// Движение камеры и персонажа
 void AMyHero::MoveForward(float Value)
 {
 	if (Controller && Value != 0.0f)
@@ -50,6 +72,7 @@ void AMyHero::MoveForward(float Value)
 	}
 }
 
+// Движение камеры и персонажа
 void AMyHero::MoveRight(float Value)
 {
 	if (Controller && Value != 0.0f)
@@ -60,12 +83,28 @@ void AMyHero::MoveRight(float Value)
 	}
 }
 
+// Приседание
 void AMyHero::StartCrouch()
 {
-	Crouch();
+	// Задаём цель — высота в приседе
+	TargetCapsuleHalfHeight = CrouchingCapsuleHalfHeight;
+
+	// Меняем скорость передвижения
+	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+
+	// Сообщаем движку, что мы в приседе (для проверки препятствий над головой)
+	GetCharacterMovement()->bWantsToCrouch = true;
 }
 
+// Приседание
 void AMyHero::StopCrouch()
 {
-	UnCrouch();
+	// Задаём цель — высота стоя
+	TargetCapsuleHalfHeight = StandingCapsuleHalfHeight;
+
+	// Возвращаем скорость
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+
+	// Сообщаем движку, что мы встаём
+	GetCharacterMovement()->bWantsToCrouch = false;
 }

@@ -12,23 +12,28 @@ class RUNANDSURVIVE_API AMyHero : public ACharacter
 	GENERATED_BODY()
 
 public:
-	void MoveForward(float Value);
-	void MoveRight(float Value);
-	void StartCrouch();
-	void StopCrouch();
-
-public:
 	// Sets default values for this character's properties
 	AMyHero();
+
+public:
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
+
+	// Хождение, вращение камеры
+	void MoveForward(float Value);
+	void MoveRight(float Value);
+
+	// Приседание
+	void StartCrouch();
+	void StopCrouch();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
+private:
+	float StandingCapsuleHalfHeight;  // Высота стоя
+	float CrouchingCapsuleHalfHeight; // Высота в приседе
+	float TargetCapsuleHalfHeight;	  // Куда стремимся при приседи
 };
