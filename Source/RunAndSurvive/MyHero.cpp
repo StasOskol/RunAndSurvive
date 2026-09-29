@@ -24,6 +24,8 @@ void AMyHero::BeginPlay()
 
 	// Изначально мы стоим
 	TargetCapsuleHalfHeight = StandingCapsuleHalfHeight;
+
+	bIsCrouching = false;
 }
 
 // Called every frame
@@ -59,6 +61,10 @@ void AMyHero::SetupPlayerInputComponent(UInputComponent *PlayerInputComponent)
 	// Приседание
 	PlayerInputComponent->BindAction("Crouch", IE_Pressed, this, &AMyHero::StartCrouch);
 	PlayerInputComponent->BindAction("UnCrouch", IE_Released, this, &AMyHero::StopCrouch);
+
+	// Спринт
+	PlayerInputComponent->BindAction("Sprint", IE_Pressed, this, &AMyHero::StartSprint);
+	PlayerInputComponent->BindAction("StopSprint", IE_Released, this, &AMyHero::StopSprint);
 }
 
 // Движение камеры и персонажа
@@ -94,6 +100,9 @@ void AMyHero::StartCrouch()
 
 	// Сообщаем движку, что мы в приседе (для проверки препятствий над головой)
 	GetCharacterMovement()->bWantsToCrouch = true;
+
+	// Запоминаем, что мы в присяди
+	bIsCrouching = true;
 }
 
 // Приседание
@@ -107,4 +116,31 @@ void AMyHero::StopCrouch()
 
 	// Сообщаем движку, что мы встаём
 	GetCharacterMovement()->bWantsToCrouch = false;
+
+	// Запоминаем, что мы встаём
+	bIsCrouching = false;
+}
+
+void AMyHero::StartSprint()
+{
+	// Проверка при приседание
+	if (bIsCrouching)
+	{
+		return;
+	}
+
+	GetCharacterMovement()->MaxWalkSpeed = 900.0f;
+}
+
+void AMyHero::StopSprint()
+{
+	// Проверка на приседание
+	if (bIsCrouching)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+		return;
+	}
+
+	// Возвращаем обычную скорость
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 }

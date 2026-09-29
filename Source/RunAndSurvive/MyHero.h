@@ -28,6 +28,10 @@ public:
 	void StartCrouch();
 	void StopCrouch();
 
+	// Спринт
+	void StartSprint();
+	void StopSprint();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -36,4 +40,7 @@ private:
 	float StandingCapsuleHalfHeight;  // Высота стоя
 	float CrouchingCapsuleHalfHeight; // Высота в приседе
 	float TargetCapsuleHalfHeight;	  // Куда стремимся при приседи
+
+	// Флаг приседания
+	bool bIsCrouching;
 };
