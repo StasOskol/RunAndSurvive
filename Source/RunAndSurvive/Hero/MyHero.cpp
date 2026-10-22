@@ -3,6 +3,7 @@
 #include "MyHero.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "MyHUDWidget.h"
 
 // Sets default values
 AMyHero::AMyHero()
@@ -28,6 +29,16 @@ void AMyHero::BeginPlay()
 	bIsCrouching = false;
 
 	GetCharacterMovement()->MaxWalkSpeed = Stats.WalkSpeed;
+
+	if (HUDWidgetClass)
+	{
+		HUDWidget = CreateWidget<UMyHUDWidget>(GetWorld(), HUDWidgetClass);
+		if (HUDWidget)
+		{
+			HUDWidget->AddToViewport();
+			HUDWidget->UpdateStats(Stats.CurrentHealth, Stats.MaxHealth, Stats.Level, Stats.CurrentAmmo, Stats.MaxAmmo);
+		}
+	}
 }
 
 // Called every frame

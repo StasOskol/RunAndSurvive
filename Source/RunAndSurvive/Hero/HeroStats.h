@@ -31,4 +31,11 @@ struct FHeroStats
     // Прокачка
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level")
     int32 Level = 1;
+
+    // Патроны
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+    int32 CurrentAmmo = 0;
+
+    UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+    int32 MaxAmmo = 90;
 };

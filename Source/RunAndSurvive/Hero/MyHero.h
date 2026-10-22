@@ -18,6 +18,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hero Stats")
 	FHeroStats Stats;
 
+	// 👇 Класс HUD для создания
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<class UMyHUDWidget> HUDWidgetClass;
+
 public:
 	virtual void Tick(float DeltaTime) override;
 
@@ -46,4 +50,7 @@ private:
 
 	// Флаг приседания
 	bool bIsCrouching;
+
+	// 👇 Указатель на созданный HUD
+	class UMyHUDWidget *HUDWidget;
 };
