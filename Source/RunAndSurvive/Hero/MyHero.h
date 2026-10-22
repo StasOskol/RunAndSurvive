@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "HeroStats.h"
 #include "MyHero.generated.h"
 
 UCLASS()
@@ -14,6 +15,8 @@ class RUNANDSURVIVE_API AMyHero : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AMyHero();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hero Stats")
+	FHeroStats Stats;
 
 public:
 	virtual void Tick(float DeltaTime) override;

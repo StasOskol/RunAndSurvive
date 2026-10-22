@@ -26,6 +26,8 @@ void AMyHero::BeginPlay()
 	TargetCapsuleHalfHeight = StandingCapsuleHalfHeight;
 
 	bIsCrouching = false;
+
+	GetCharacterMovement()->MaxWalkSpeed = Stats.WalkSpeed;
 }
 
 // Called every frame
@@ -96,7 +98,7 @@ void AMyHero::StartCrouch()
 	TargetCapsuleHalfHeight = CrouchingCapsuleHalfHeight;
 
 	// Меняем скорость передвижения
-	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+	GetCharacterMovement()->MaxWalkSpeed = Stats.CrouchSpeed;
 
 	// Сообщаем движку, что мы в приседе (для проверки препятствий над головой)
 	GetCharacterMovement()->bWantsToCrouch = true;
@@ -112,7 +114,7 @@ void AMyHero::StopCrouch()
 	TargetCapsuleHalfHeight = StandingCapsuleHalfHeight;
 
 	// Возвращаем скорость
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = Stats.WalkSpeed;
 
 	// Сообщаем движку, что мы встаём
 	GetCharacterMovement()->bWantsToCrouch = false;
@@ -129,7 +131,7 @@ void AMyHero::StartSprint()
 		return;
 	}
 
-	GetCharacterMovement()->MaxWalkSpeed = 900.0f;
+	GetCharacterMovement()->MaxWalkSpeed = Stats.SprintSpeed;
 }
 
 void AMyHero::StopSprint()
@@ -137,10 +139,10 @@ void AMyHero::StopSprint()
 	// Проверка на приседание
 	if (bIsCrouching)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+		GetCharacterMovement()->MaxWalkSpeed = Stats.CrouchSpeed;
 		return;
 	}
 
 	// Возвращаем обычную скорость
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = Stats.WalkSpeed;
 }
